@@ -1,6 +1,10 @@
 [project]
-name = "pythonproject2"
+name = "ApolloAIR1-LiveView"
 version = "0.1.0"
-description = "Add your description here"
+description = "Plot ApolloAIR1 data live."
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.10.8",
+    "pre-commit==4.5.1",
+    "requests>=2.32.5",
+]
