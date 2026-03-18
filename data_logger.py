@@ -29,6 +29,10 @@ SENSORS = {
     "sensor-pm__2_5_m_weight_concentration",
     "sensor-pm__4_m_weight_concentration",
     "sensor-pm__10_m_weight_concentration",
+    "sensor-pm_0_3_to_1__m",
+    "sensor-pm_1_to_2_5__m",
+    "sensor-pm_2_5_to_4__m",
+    "sensor-pm_4_to_10__m",
 }
 
 SCHEMA = """\

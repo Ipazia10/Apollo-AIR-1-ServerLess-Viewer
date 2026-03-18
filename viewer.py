@@ -31,6 +31,12 @@ SENSOR_GROUPS = {
         "sensor-pm__4_m_weight_concentration",
         "sensor-pm__10_m_weight_concentration",
     ],
+    "PM Count (#/cm³)": [
+        "sensor-pm_0_3_to_1__m",
+        "sensor-pm_1_to_2_5__m",
+        "sensor-pm_2_5_to_4__m",
+        "sensor-pm_4_to_10__m",
+    ],
 }
 
 DISPLAY_NAMES = {
@@ -40,10 +46,14 @@ DISPLAY_NAMES = {
     "sensor-dps310_pressure": "Pressure",
     "sensor-sen55_voc": "VOC",
     "sensor-sen55_nox": "NOx",
-    "sensor-pm__1_m_weight_concentration": "PM1.0",
-    "sensor-pm__2_5_m_weight_concentration": "PM2.5",
-    "sensor-pm__4_m_weight_concentration": "PM4.0",
-    "sensor-pm__10_m_weight_concentration": "PM10",
+    "sensor-pm__1_m_weight_concentration": "PM<=1.0",
+    "sensor-pm__2_5_m_weight_concentration": "PM<=2.5",
+    "sensor-pm__4_m_weight_concentration": "PM<=4.0",
+    "sensor-pm__10_m_weight_concentration": "PM<=10",
+    "sensor-pm_0_3_to_1__m": "0.3–1µm",
+    "sensor-pm_1_to_2_5__m": "1–2.5µm",
+    "sensor-pm_2_5_to_4__m": "2.5–4µm",
+    "sensor-pm_4_to_10__m": "4–10µm",
 }
 
 
@@ -244,5 +254,5 @@ def update_chart(n_intervals):
 
 if __name__ == "__main__":
     print(f"Database: {DB_PATH}")
-    print("Open http://127.0.0.1:8050 in your browser")
-    app.run(debug=False, host="127.0.0.1", port=8050)
+    print("Open http://0.0.0.1:8050 in your browser")
+    app.run(debug=False, host="0.0.0.0", port=8050)
