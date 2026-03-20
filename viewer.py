@@ -9,9 +9,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
-import plotly.graph_objects as go
+from plotly import graph_objs as go
 from dash import Dash, Input, Output, callback, dcc, html
 from plotly.subplots import make_subplots
+from zoneinfo import ZoneInfo 
+
+LOCAL_TZ = ZoneInfo("Europe/Zurich")
 
 DB_PATH = str(Path(__file__).with_name("sensor_data.db"))
 
@@ -187,6 +190,11 @@ app.layout = html.Div(
     Output("stats", "children"),
     Input("refresh", "n_intervals"),
 )
+@callback(
+    Output("chart", "figure"),
+    Output("stats", "children"),
+    Input("refresh", "n_intervals"),
+)
 def update_chart(n_intervals):
     count = get_row_count()
     t_range_min, t_range_max = get_time_range()
@@ -205,9 +213,15 @@ def update_chart(n_intervals):
         for sid in sensor_ids:
             ts, vals = query_sensor(sid)
             if len(ts) == 0:
-                row += 1
                 continue
-            dates = [datetime.fromtimestamp(t, tz=timezone.utc).isoformat() for t in ts]
+
+            dates = [
+                datetime.fromtimestamp(float(t), tz=timezone.utc)
+                .astimezone(LOCAL_TZ)
+                .isoformat()
+                for t in ts
+            ]
+
             fig.add_trace(
                 go.Scattergl(
                     x=dates,
@@ -228,30 +242,30 @@ def update_chart(n_intervals):
         margin={"l": 60, "r": 20, "t": 40, "b": 40},
         legend={"orientation": "h", "y": -0.02},
         hovermode="x unified",
-        uirevision="constant",  # preserve zoom/pan state across refreshes
+        uirevision="constant",
     )
 
-    # Enable range slider on bottom x-axis only
     fig.update_xaxes(
         rangeslider={"visible": True, "thickness": 0.04},
         row=n_groups,
         col=1,
     )
 
-    if t_range_min and t_range_max:
-        d0 = datetime.fromtimestamp(t_range_min, tz=timezone.utc).strftime(
-            "%Y-%m-%d %H:%M",
+    if t_range_min is not None and t_range_max is not None:
+        d0 = datetime.fromtimestamp(float(t_range_min), tz=timezone.utc).astimezone(LOCAL_TZ).strftime(
+            "%Y-%m-%d %H:%M"
         )
-        d1 = datetime.fromtimestamp(t_range_max, tz=timezone.utc).strftime(
-            "%Y-%m-%d %H:%M",
+        d1 = datetime.fromtimestamp(float(t_range_max), tz=timezone.utc).astimezone(LOCAL_TZ).strftime(
+            "%Y-%m-%d %H:%M"
         )
-        stats = f"{count:,} rows | {d0} → {d1} | Showing ≤{MAX_POINTS} pts/trace (LTTB) | Auto-refresh 10s"
+        stats = (
+            f"{count:,} rows | {d0} → {d1} | "
+            f"Showing ≤{MAX_POINTS} pts/trace (LTTB) | Auto-refresh 10s"
+        )
     else:
         stats = f"{count:,} rows in database (no data yet)"
 
     return fig, stats
-
-
 if __name__ == "__main__":
     print(f"Database: {DB_PATH}")
     print("Open http://0.0.0.1:8050 in your browser")
