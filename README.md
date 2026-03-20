@@ -26,6 +26,8 @@ CO2, Temperature, Humidity, Pressure, VOC Index, NOx Index, PM1.0, PM2.5, PM4.0,
 python -m venv .venv
 .venv/Scripts/activate  # Windows
 pip install .
+pip install plotly # I didn't have it on Windows
+python -m pip install tzdata #needed for the timezone
 ```
 
 The device is expected at `http://192.168.1.62` (hardcoded in each script — change `DEVICE_URL` if yours differs).
